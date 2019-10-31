@@ -1,0 +1,15 @@
+
+g++ -I "../../ode-0.8/include" -c agent.cpp       -o agent.o
+g++ -I "../../ode-0.8/include" -c debris.cpp      -o debris.o
+g++ -I "../../ode-0.8/include" -c environment.cpp -o environment.o
+g++ -I "../../ode-0.8/include" -c matrix.cpp      -o matrix.o
+g++ -I "../../ode-0.8/include" -c mejoint.cpp     -o mejoint.o
+g++ -I "../../ode-0.8/include" -c meobject.cpp    -o meobject.o
+g++ -I "../../ode-0.8/include" -c nnetwork.cpp    -o nnetwork.o
+g++ -I "../../ode-0.8/include" -c plume.cpp       -o plume.o
+g++ -I "../../ode-0.8/include" -c plumePoint.cpp  -o plumePoint.o
+g++ -I "../../ode-0.8/include" -c simParams.cpp   -o simParams.o
+g++ -I "../../ode-0.8/include" -c trajectory.cpp  -o trajectory.o
+g++ -I "../../ode-0.8/include" -c MorphEngine.cpp -o MorphEngine.o
+
+g++ -g -O2 -I -L -I/users/j/b/jbongard/ode/include -g -O2 -I -L -o MorphEngine -L../../ode-0.9/drawstuff/src -L../../ode-0.9/ode/src  agent.o debris.o environment.o matrix.o mejoint.o meobject.o nnetwork.o plume.o plumePoint.o simParams.o trajectory.o MorphEngine.o -ldrawstuff /users/j/b/jbongard/ode/lib/libode.a -lGL -lGLU -lstdc++ -lm -lpthread  -lstdc++ -lm -lpthread

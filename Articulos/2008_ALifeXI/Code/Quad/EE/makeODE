@@ -1,0 +1,6 @@
+g++ -c GA_Camera.cpp -o GA_Camera.o
+g++ -c ga.cpp -o ga.o
+g++ -c genome.cpp -o genome.o
+g++ -c matrix.cpp -o matrix.o
+g++ -c simParams.cpp -o simParams.o
+g++ -g -o GA_Camera GA_Camera.o ga.o genome.o matrix.o simParams.o

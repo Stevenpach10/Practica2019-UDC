@@ -1,0 +1,31 @@
+./GA_Camera -r 2 -it -rel -ph
+./GA_Camera -r 3 -it -rel -ph
+./GA_Camera -r 4 -it -rel -ph
+./GA_Camera -r 5 -it -rel -ph
+./GA_Camera -r 6 -it -rel -ph
+./GA_Camera -r 7 -it -rel -ph
+./GA_Camera -r 8 -it -rel -ph
+./GA_Camera -r 9 -it -rel -ph
+
+./GA_Camera -r 10 -it -rel -ph
+./GA_Camera -r 11 -it -rel -ph
+./GA_Camera -r 12 -it -rel -ph
+./GA_Camera -r 13 -it -rel -ph
+./GA_Camera -r 14 -it -rel -ph
+./GA_Camera -r 15 -it -rel -ph
+./GA_Camera -r 16 -it -rel -ph
+./GA_Camera -r 17 -it -rel -ph
+./GA_Camera -r 18 -it -rel -ph
+./GA_Camera -r 19 -it -rel -ph
+
+./GA_Camera -r 20 -it -rel -ph
+./GA_Camera -r 21 -it -rel -ph
+./GA_Camera -r 22 -it -rel -ph
+./GA_Camera -r 23 -it -rel -ph
+./GA_Camera -r 24 -it -rel -ph
+./GA_Camera -r 25 -it -rel -ph
+./GA_Camera -r 26 -it -rel -ph
+./GA_Camera -r 27 -it -rel -ph
+./GA_Camera -r 28 -it -rel -ph
+./GA_Camera -r 29 -it -rel -ph
+

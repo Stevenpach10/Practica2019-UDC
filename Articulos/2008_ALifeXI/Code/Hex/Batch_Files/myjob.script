@@ -1,0 +1,13 @@
+# This job needs 1 compute node with 1 processor per node.
+#PBS -l nodes=1:ppn=2
+# It should be allowed to run for up to 1 hour.
+#PBS -l walltime=18:00:00
+# Name of job.
+#PBS -N myjob
+# Join STDERR TO STDOUT.  (omit this if you want separate STDOUT AND STDERR)
+#PBS -j oe   
+
+cd $HOME/BehChaining/EE
+./GA_Camera   -r 5 -h 0 -m 5 &
+cd $HOME/BehChaining/Target
+./MorphEngine -r 5 -null
