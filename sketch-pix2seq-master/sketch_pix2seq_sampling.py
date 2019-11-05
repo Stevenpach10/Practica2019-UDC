@@ -167,7 +167,7 @@ def sampling_conditional(data_dir, sampling_dir, model_dir):
     # loads the weights from checkpoint into our model
     load_checkpoint(sess, model_dir)
 
-    for _ in range(20):
+    for _ in range(2):
         # get a sample drawing from the test set, and render it to .svg
         stroke, rand_idx, image = test_set.random_sample()  # ndarray, [N_points, 3]
         sub_sampling_dir = os.path.join(sampling_dir, str(rand_idx))
