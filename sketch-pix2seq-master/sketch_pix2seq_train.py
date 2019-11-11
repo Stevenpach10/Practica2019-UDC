@@ -97,7 +97,34 @@ def download_pretrained_models(
         models_zip.extractall(models_root_dir)
     print('Unzipping complete.')
 
+def load_parameters(model_params, inference_mode=False):
+    np_load_old = np.load
+    np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k)
+    
+    max_seq_len = 129
+    model_params.max_seq_len = max_seq_len
+    print('model_params.max_seq_len %i.' % model_params.max_seq_len)
 
+    eval_model_params = sketch_rnn_model.copy_hparams(model_params)
+
+    eval_model_params.use_input_dropout = 0
+    eval_model_params.use_recurrent_dropout = 0
+    eval_model_params.use_output_dropout = 0
+    eval_model_params.is_training = 1
+
+    if inference_mode:
+        eval_model_params.batch_size = 1
+        eval_model_params.is_training = 0
+    
+    sample_model_params = sketch_rnn_model.copy_hparams(eval_model_params)
+    sample_model_params.batch_size = 1  # only sample one at a time
+    sample_model_params.max_seq_len = 1  # sample one point at a time
+
+
+    np.load = np_load_old
+
+    return [model_params,eval_model_params,sample_model_params]
+    
 def load_dataset(data_dir, model_params, inference_mode=False):
     """Loads the .npz file, and splits the set into train/valid/test."""
     np_load_old = np.load

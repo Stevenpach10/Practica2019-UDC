@@ -5,10 +5,11 @@ import argparse
 import tensorflow as tf
 from six.moves import range
 import svgwrite
+from PIL import Image
 
 import model as sketch_rnn_model
 import utils
-from sketch_pix2seq_train import load_dataset, reset_graph, load_checkpoint
+from sketch_pix2seq_train import load_dataset, reset_graph, load_checkpoint,load_parameters
 
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -107,8 +108,23 @@ def load_env_compatible(data_dir, model_dir):
         data[fix] = (data[fix] == 1)
     model_params.parse_json(json.dumps(data))
 
-    return load_dataset(data_dir, model_params, inference_mode=True)
+    return load_dataset(data_dir, model_params, inference_mode=True)#
 
+def load_env_compatible_Modified(data_dir, model_dir):
+    """Loads environment for inference mode, used in jupyter notebook."""
+    # modified https://github.com/tensorflow/magenta/blob/master/magenta/models/sketch_rnn/sketch_rnn_train.py
+    # to work with depreciated tf.HParams functionality
+    model_params = sketch_rnn_model.get_default_hparams()
+    with tf.gfile.Open(os.path.join(model_dir, 'model_config.json'), 'r') as f:
+        data = json.load(f)
+    fix_list = ['conditional', 'is_training', 'use_input_dropout', 'use_output_dropout', 'use_recurrent_dropout']
+    for fix in fix_list:
+        data[fix] = (data[fix] == 1)
+    model_params.parse_json(json.dumps(data))
+
+    #return load_dataset(data_dir, model_params, inference_mode=True)#STEVEN
+    return load_parameters(model_params,inference_mode = True)
+    
 
 def load_model_compatible(model_dir):
     """Loads model for inference mode, used in jupyter notebook."""
@@ -154,7 +170,7 @@ def decode(session, sample_model, max_seq_len, z_input=None, temperature=0.1):
 def sampling_conditional(data_dir, sampling_dir, model_dir):
     [train_set, valid_set, test_set, hps_model, eval_hps_model, sample_hps_model] = \
         load_env_compatible(data_dir, model_dir)
-
+    print("VOY POR AQUI")
     # construct the sketch-rnn model here:
     reset_graph()
     model = sketch_rnn_model.Model(hps_model)
@@ -177,16 +193,51 @@ def sampling_conditional(data_dir, sampling_dir, model_dir):
 
         z = encode(image, sess, eval_model)
         strokes_out = decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1)  # in stroke-3 format
+        print(strokes_out.shape)
         draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
 
         # Create generated grid at various temperatures from 0.1 to 1.0
-        stroke_list = []
-        for i in range(10):
-            for j in range(3):
-                stroke_list.append(
-                    [decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1), [j, i]])
-        stroke_grid = make_grid_svg(stroke_list)
-        draw_strokes(stroke_grid, os.path.join(sub_sampling_dir, 'sample_pred_cond_100.svg'))
+        #stroke_list = []
+        #for i in range(10):
+        #   for j in range(3):
+        #        stroke_list.append(
+        #           [decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1), [j, i]])
+        #stroke_grid = make_grid_svg(stroke_list)
+        #draw_strokes(stroke_grid, os.path.join(sub_sampling_dir, 'sample_pred_cond_100.svg'))
+
+def load_image(png_path):
+    img_batch = np.zeros(shape=[1, 48, 48, 1], dtype=np.float32)
+    for img_idx in range(len(png_path)):
+        image = Image.open(png_path[img_idx]).convert('L')
+        image = np.array(image, dtype=np.float32)
+        image = np.expand_dims(image, axis=2)
+        #print(image.shape)
+        img_batch[img_idx] = image
+    
+    return img_batch
+
+def sampling_conditional_Modified(data_dir, sampling_dir, model_dir):
+    [hps_model, eval_hps_model, sample_hps_model] = \
+        load_env_compatible_Modified(data_dir, model_dir)
+    # construct the sketch-rnn model here:
+    reset_graph()
+    model = sketch_rnn_model.Model(hps_model)
+    eval_model = sketch_rnn_model.Model(eval_hps_model, reuse=True)
+    sampling_model = sketch_rnn_model.Model(sample_hps_model, reuse=True)
+
+    sess = tf.InteractiveSession()
+    sess.run(tf.global_variables_initializer())
+
+    # loads the weights from checkpoint into our model
+    load_checkpoint(sess, model_dir)
+
+    for _ in range(2):
+        # get a sample drawing from the test set, and render it to .svg
+        image = load_image(["./200.png"])  # ndarray, [N_points, 3]
+        z = encode(image, sess, eval_model)
+        strokes_out = decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1)  # in stroke-3 format
+        #draw_strokes(strokes_out, os.path.join("./", 'sample_pred_cond.svg'))
+        return strokes_out
 
 
 def main(**kwargs):
@@ -195,7 +246,7 @@ def main(**kwargs):
     sampling_dir_ = kwargs['sampling_dir']
     os.makedirs(sampling_dir_, exist_ok=True)
 
-    sampling_conditional(data_dir_, sampling_dir_, model_dir_)
+    sampling_conditional_Modified(data_dir_, sampling_dir_, model_dir_)
 
 
 if __name__ == '__main__':
