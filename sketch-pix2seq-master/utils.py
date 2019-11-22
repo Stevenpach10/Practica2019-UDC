@@ -262,7 +262,7 @@ class DataLoader(object):
 
     def random_sample(self):
         """Return a random sample, in stroke-3 format as used by draw_strokes."""
-        rand_idx = random.randint(0, len(self.strokes) - 1)
+        rand_idx = 337
         print('## rand_idx', rand_idx)
         sample = np.copy(self.strokes[rand_idx])
         image = self.load_images([self.png_paths[rand_idx]])

@@ -47,6 +47,9 @@ def draw_strokes(data, svg_filename, factor=0.2, padding=50):
         p += command + str(x) + ", " + str(y) + " "
     the_color = "black"
     stroke_width = 1
+    print("")
+    print("COMANDOS")
+    print(p)
     dwg.add(dwg.path(p).stroke(the_color, stroke_width).fill("none"))
     dwg.save()
 
@@ -170,7 +173,6 @@ def decode(session, sample_model, max_seq_len, z_input=None, temperature=0.1):
 def sampling_conditional(data_dir, sampling_dir, model_dir):
     [train_set, valid_set, test_set, hps_model, eval_hps_model, sample_hps_model] = \
         load_env_compatible(data_dir, model_dir)
-    print("VOY POR AQUI")
     # construct the sketch-rnn model here:
     reset_graph()
     model = sketch_rnn_model.Model(hps_model)
@@ -183,20 +185,18 @@ def sampling_conditional(data_dir, sampling_dir, model_dir):
     # loads the weights from checkpoint into our model
     load_checkpoint(sess, model_dir)
 
-    for _ in range(2):
+    for _ in range(1):
         # get a sample drawing from the test set, and render it to .svg
         stroke, rand_idx, image = test_set.random_sample()  # ndarray, [N_points, 3]
         sub_sampling_dir = os.path.join(sampling_dir, str(rand_idx))
         os.makedirs(sub_sampling_dir, exist_ok=True)
-        print('rand_idx', rand_idx, 'stroke.shape', stroke.shape)
         draw_strokes(stroke, os.path.join(sub_sampling_dir, 'sample_gt.svg'))
-
         z = encode(image, sess, eval_model)
-        strokes_out = decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1)  # in stroke-3 format
-        print(strokes_out.shape)
-        draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
+        strokes_out = decode(sess, sampling_model, 129, z, temperature=0.1)  # in stroke-3 format
+        transformToAbsolutePosition(strokes_out)
+        #draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
 
-        # Create generated grid at various temperatures from 0.1 to 1.0
+         #Create generated grid at various temperatures from 0.1 to 1.0
         #stroke_list = []
         #for i in range(10):
         #   for j in range(3):
@@ -230,14 +230,34 @@ def sampling_conditional_Modified(data_dir, sampling_dir, model_dir):
 
     # loads the weights from checkpoint into our model
     load_checkpoint(sess, model_dir)
-
-    for _ in range(2):
+    for _ in range(1):
         # get a sample drawing from the test set, and render it to .svg
-        image = load_image(["./200.png"])  # ndarray, [N_points, 3]
+        image = load_image(["./100.png"])  # ndarray, [N_points, 3]
         z = encode(image, sess, eval_model)
         strokes_out = decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1)  # in stroke-3 format
-        #draw_strokes(strokes_out, os.path.join("./", 'sample_pred_cond.svg'))
+        draw_strokes(strokes_out, os.path.join("./", 'sample_pred_cond.svg'))
         return strokes_out
+
+def transformToAbsolutePosition(strokes, factor=0.2, padding=50):
+    min_x, max_x, min_y, max_y = utils.get_bounds(strokes, factor)
+    abs_x = int(padding / 2) - min_x
+    abs_y = int(padding / 2) - min_y
+    position = []
+    position.append([abs_x,abs_y,0])
+    for stroke in strokes:
+        abs_x += stroke[0]
+        abs_y += stroke[1]
+        position.append([abs_x,abs_y,stroke[2]])
+
+    position = np.asarray(position)
+    return position
+
+def drawAbsolutePosition(strokes_abs, size):
+    image = np.ones((size,size))*255
+    for stroke in strokes_abs
+        image[(int)stroke[0]][(int)stroke[1]]
+    
+    cv2.
 
 
 def main(**kwargs):
@@ -246,7 +266,7 @@ def main(**kwargs):
     sampling_dir_ = kwargs['sampling_dir']
     os.makedirs(sampling_dir_, exist_ok=True)
 
-    sampling_conditional_Modified(data_dir_, sampling_dir_, model_dir_)
+    sampling_conditional(data_dir_, sampling_dir_, model_dir_)
 
 
 if __name__ == '__main__':

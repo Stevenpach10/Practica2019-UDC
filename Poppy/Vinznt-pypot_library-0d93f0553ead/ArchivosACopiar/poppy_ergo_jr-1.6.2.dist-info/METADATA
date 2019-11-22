@@ -1,0 +1,16 @@
+Metadata-Version: 2.0
+Name: poppy-ergo-jr
+Version: 1.6.2
+Summary: Poppy Ergo Jr Software Library
+Home-page: https://github.com/poppy-project/poppy-ergo-jr
+Author: Pierre Rouanet, Jonathan Grizou, Matthieu Lapeyre
+Author-email: pierre.rouanet@gmail.com
+License: GNU GENERAL PUBLIC LICENSE Version 3
+Platform: UNKNOWN
+Requires-Dist: hampy
+Requires-Dist: poppy-creature (>=1.8)
+Requires-Dist: pypot (>=2.11)
+
+UNKNOWN
+
+
