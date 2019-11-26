@@ -6,6 +6,7 @@ import tensorflow as tf
 from six.moves import range
 import svgwrite
 from PIL import Image
+import matplotlib.pyplot as plt
 
 import model as sketch_rnn_model
 import utils
@@ -193,7 +194,6 @@ def sampling_conditional(data_dir, sampling_dir, model_dir):
         draw_strokes(stroke, os.path.join(sub_sampling_dir, 'sample_gt.svg'))
         z = encode(image, sess, eval_model)
         strokes_out = decode(sess, sampling_model, 129, z, temperature=0.1)  # in stroke-3 format
-        transformToAbsolutePosition(strokes_out)
         #draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
 
          #Create generated grid at various temperatures from 0.1 to 1.0
@@ -216,10 +216,9 @@ def load_image(png_path):
     
     return img_batch
 
-def sampling_conditional_Modified(data_dir, sampling_dir, model_dir):
+def sampling_conditional_example(data_dir, sampling_dir, model_dir, image_path):
     [hps_model, eval_hps_model, sample_hps_model] = \
         load_env_compatible_Modified(data_dir, model_dir)
-    # construct the sketch-rnn model here:
     reset_graph()
     model = sketch_rnn_model.Model(hps_model)
     eval_model = sketch_rnn_model.Model(eval_hps_model, reuse=True)
@@ -227,16 +226,16 @@ def sampling_conditional_Modified(data_dir, sampling_dir, model_dir):
 
     sess = tf.InteractiveSession()
     sess.run(tf.global_variables_initializer())
-
-    # loads the weights from checkpoint into our model
     load_checkpoint(sess, model_dir)
-    for _ in range(1):
-        # get a sample drawing from the test set, and render it to .svg
-        image = load_image(["./100.png"])  # ndarray, [N_points, 3]
-        z = encode(image, sess, eval_model)
-        strokes_out = decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1)  # in stroke-3 format
-        draw_strokes(strokes_out, os.path.join("./", 'sample_pred_cond.svg'))
-        return strokes_out
+    image = load_image([image_path])  # ndarray, [N_points, 3]
+    z = encode(image, sess, eval_model)
+    strokes_out = decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1)  # in stroke-3 format
+    draw_strokes(strokes_out, './gato.svg')
+    return strokes_out
+def getAbsoluteStrokes(data_dir_, sampling_dir_, model_dir_, image_path):
+    strokes = sampling_conditional_example(data_dir_, sampling_dir_, model_dir_,image_path)
+    absolute_strokes = transformToAbsolutePosition(strokes)
+    drawAbsolutePosition(absolute_strokes)
 
 def transformToAbsolutePosition(strokes, factor=0.2, padding=50):
     min_x, max_x, min_y, max_y = utils.get_bounds(strokes, factor)
@@ -246,18 +245,20 @@ def transformToAbsolutePosition(strokes, factor=0.2, padding=50):
     position.append([abs_x,abs_y,0])
     for stroke in strokes:
         abs_x += stroke[0]
-        abs_y += stroke[1]
+        abs_y -= stroke[1]
         position.append([abs_x,abs_y,stroke[2]])
 
     position = np.asarray(position)
     return position
 
-def drawAbsolutePosition(strokes_abs, size):
-    image = np.ones((size,size))*255
-    for stroke in strokes_abs
-        image[(int)stroke[0]][(int)stroke[1]]
+def drawAbsolutePosition(strokes_abs):
+    print(strokes_abs)
+    x = strokes_abs[:,0]
+    y = strokes_abs[:,1]
     
-    cv2.
+    plt.scatter(x, y)
+    plt.show()
+    
 
 
 def main(**kwargs):
@@ -266,8 +267,7 @@ def main(**kwargs):
     sampling_dir_ = kwargs['sampling_dir']
     os.makedirs(sampling_dir_, exist_ok=True)
 
-    sampling_conditional(data_dir_, sampling_dir_, model_dir_)
-
+    getAbsoluteStrokes(data_dir_, sampling_dir_, model_dir_,'./200.png')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
