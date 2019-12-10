@@ -1,0 +1,66 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Desconocido </title></head><body>
+<h1 id="ikpy">IKPy</h1>
+<p><a href="https://gitter.im/Phylliade/ikpy?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join the chat at https://gitter.im/Phylliade/ikpy" src="https://badges.gitter.im/Phylliade/ikpy.svg"/></a>
+<img alt="Travis-CI" src="https://travis-ci.org/Phylliade/ikpy.svg?branch=master"/>
+<a href="https://pypi.python.org/pypi/ikpy/"><img alt="PyPI" src="https://img.shields.io/pypi/v/ikpy.svg"/></a>
+<a href="http://ikpy.readthedocs.org/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/ikpy/badge/?version=latest"/></a>
+<a href="https://pypi.python.org/pypi/ikpy/"><img alt="PyPI" src="https://img.shields.io/pypi/dm/ikpy.svg"/></a>
+<a href="http://mybinder.org/repo/Phylliade/ikpy"><img alt="Binder" src="http://mybinder.org/badge.svg"/></a></p>
+<p><img alt="demo" src="two_arms-1.png"/></p>
+<h1 id="demo">Demo</h1>
+<p>Live demos of what IKPy can do (click on the image below to see the video):</p>
+<p><a href="https://www.youtube.com/watch?v=H0ysr5qSbis"><img alt="" src="http://img.youtube.com/vi/H0ysr5qSbis/0.jpg"/></a>
+<a href="https://www.youtube.com/watch?v=Jq0-DkEwwj4"><img alt="" src="http://img.youtube.com/vi/Jq0-DkEwwj4/0.jpg"/></a></p>
+<p>Also, a presentation of IKPy: <a href="https://github.com/Phylliade/ikpy/blob/master/tutorials/IKPy%20speech.pdf">Presentation</a>.</p>
+<h1 id="features">Features</h1>
+<p>With IKPy, you can:</p>
+<ul>
+<li>Compute the <strong>Inverse Kinematics</strong> of every existing robot.</li>
+<li>Define your kinematic chain using <strong>arbitrary representations</strong>: DH (Denavitâ€“Hartenberg), URDF standard, custom...</li>
+<li>Automaticly import a kinematic chain from a <strong>URDF file</strong>.</li>
+<li>IKPy is <strong>precise</strong> (up to 7 digits): the only limitation being your underlying model's precision, and <strong>fast</strong>: from 7 ms to 50 ms (depending on your precision) for a complete IK computation.</li>
+<li><strong>Plot</strong> your kinematic chain: no need to use a real robot (or a simulator) to test your algorithms!</li>
+<li>Define your own Inverse Kinematics methods.</li>
+</ul>
+<p>Moreover, IKPy is a <strong>pure-Python library</strong>: the install is a matter of seconds, and no compiling is required.</p>
+<h1 id="installation">Installation</h1>
+<p>You have three options:</p>
+<ol>
+<li>From PyPI (recommended) - simply run:</li>
+</ol>
+<p><code>bash
+   pip install ikpy</code>
+  If you intend to plot your robot, you can install the plotting dependencies (mainly <code>matplotlib</code>):
+  <code>bash
+  pip install 'ikpy[plot]'</code></p>
+<ol>
+<li>
+<p>If you work with Anaconda, there's also a Conda package of IKPy:
+  <code>conda install -c https://conda.anaconda.org/phylliade ikpy</code></p>
+</li>
+<li>
+<p>From source - first download and extract the archive, then run:</p>
+</li>
+</ol>
+<p><code>bash
+   pip install ./</code>
+   NB: You must have the proper rights to execute this command</p>
+<h1 id="quickstart">Quickstart</h1>
+<p>Follow this IPython <a href="https://github.com/Phylliade/ikpy/blob/master/tutorials/Quickstart.ipynb">notebook</a>.</p>
+<h1 id="guides-and-tutorials">Guides and Tutorials</h1>
+<p>Go to the <a href="https://github.com/Phylliade/ikpy/wiki">wiki</a>. It should introduce you to the basic concepts of IKPy.</p>
+<h1 id="api-documentation">API Documentation</h1>
+<p>An extensive documentation of the API can be found <a href="http://ikpy.readthedocs.org">here</a>.</p>
+<h1 id="dependencies-and-compatibility">Dependencies and compatibility</h1>
+<p>The library can work with both versions of Python (2.7 and 3.x).
+It requires <code>numpy</code> and <code>scipy</code>.</p>
+<p><code>sympy</code> is highly recommended, for fast hybrid computations, that's why it is installed by default.</p>
+<p><code>matplotlib</code> is optional: it is used to plot your models (in 3D).</p>
+<h1 id="contributing">Contributing</h1>
+<p>IKPy is designed to be easily customisable: you can add your own IK methods or robot representations (such as DH-Parameters) using a dedicated <a href="https://github.com/Phylliade/ikpy/wiki/Contributing">developer API</a>.</p>
+<p>Contributions are welcome: if you have an awesome patented (but also open-source!) IK method, don't hesitate to propose adding it to the library!</p>
+<h1 id="links">Links</h1>
+<ul>
+<li>If performance is your main concern, <code>aversive++</code> has an inverse kinematics <a href="https://github.com/AversivePlusPlus/ik">module</a> written in C++, which works the same way IKPy does.</li>
+</ul>
+</body></html>
