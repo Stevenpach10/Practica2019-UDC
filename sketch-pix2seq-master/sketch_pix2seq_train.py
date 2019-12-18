@@ -35,7 +35,7 @@ tf.app.flags.DEFINE_string(
     'snapshot_root', 'outputs/snapshot',
     'Directory to store model checkpoints.')
 tf.app.flags.DEFINE_boolean(
-    'resume_training', False,
+    'resume_training', True,
     'Set to true to load previous checkpoint')
 tf.app.flags.DEFINE_string(
     'hparams', '',
@@ -277,6 +277,7 @@ def evaluate_model(sess, model, data_set):
 def load_checkpoint(sess, checkpoint_path):
     saver = tf.train.Saver(tf.global_variables())
     ckpt = tf.train.get_checkpoint_state(checkpoint_path)
+    print("*****************************************************************************************")
     print('Loading model %s' % ckpt.model_checkpoint_path)
     saver.restore(sess, ckpt.model_checkpoint_path)
 

@@ -1,2 +1,0 @@
-file(GLOB _FILES "*.svg")
-install(FILES ${_FILES} DESTINATION ${INKSCAPE_SHARE_INSTALL}/markers)

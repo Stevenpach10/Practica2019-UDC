@@ -19,7 +19,7 @@ def get_default_hparams():
     hparams = tf.contrib.training.HParams(
         data_set=['cat.npz'],  # Our dataset.
         num_steps=10000000,  # Total number of steps of training. Keep large.
-        save_every=2000,  # Number of batches per checkpoint creation.
+        save_every=5,  # Number of batches per checkpoint creation.
         img_H=48,
         img_W=48,
         max_seq_len=250,  # Not used. Will be changed by model. [Eliminate?]

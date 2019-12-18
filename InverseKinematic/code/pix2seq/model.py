@@ -17,7 +17,7 @@ def copy_hparams(hparams):
 def get_default_hparams():
     """Return default HParams for sketch-rnn."""
     hparams = tf.contrib.training.HParams(
-        data_set=['cat.npz'],  # Our dataset.
+        data_set=['bear.npz','bicycle.npz','lion.npz'],  # Our dataset.
         num_steps=10000000,  # Total number of steps of training. Keep large.
         save_every=2000,  # Number of batches per checkpoint creation.
         img_H=48,
