@@ -10,4 +10,16 @@ Se muestra un ejemplo de ejecución en el simulador V-REP, donde el robot Poppy 
 Para la preparación de los datos se ha utilizado el repositorio de [Sketch-pix2seq](https://github.com/MarkMoHR/sketch-pix2seq). Aqui puede observar los pasos necesarios para realizar la preparación de los datos y  el correspondiente entrenamiento.
 
 ###Configuración
-Para configurar los hiperparametros dirigase al directorio [InverseKinematic.py](./InverseKinematic/code/InverseKinematic.py)
+Para configurar los hiperparametros dirigase al directorio [InverseKinematic.py](./InverseKinematic/code/InverseKinematic.py) en *getParams()*
+
+##Ejecución
+Para ejecutar el proyecto debe:
+1. Abrir el simulador V-REP
+2. Colocarse en el directorio [InverseKinematic.py](./InverseKinematic/code) y ejecutar el comando  
+```
+python InverseKinematic.py
+ ```
+
+##Creditos
+- El código correspondiente a Sketch-pix2seq fue tomado del repositorio [Sketch-pix2seq](https://github.com/MarkMoHR/sketch-pix2seq).
+- La Fundación Pública Galega Centro Tecnolóxico de Supercomputación de Galicia (CESGA) por los recursos computacionales brindados para el entrenamiento. 
