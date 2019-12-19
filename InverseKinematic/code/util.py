@@ -137,3 +137,19 @@ def plotAllData(output, save=False, name="Image"):
     if save:
         plt.savefig(name + "_Axis_Z")
     plt.show()
+def drawAbsolutePosition(strokes_abs,limits):
+    """Plot all points in a canvas for visualization. 
+
+    Parameters
+    -------------------
+    strokes_abs: List
+        List with all strokes of an image in absolute position.
+    limits: List
+        List with two float value for set the limit of the canvas. (X, Y)
+    """
+    x = strokes_abs[:,0]
+    y = strokes_abs[:,1]
+    plt.scatter(x, y)
+    plt.xlim(limits[0], limits[1])
+    plt.ylim(limits[2], limits[3])
+    plt.show()

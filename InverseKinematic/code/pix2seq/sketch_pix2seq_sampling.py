@@ -1,3 +1,13 @@
+#****************************************************************************
+# This code is modified from repo of Sketch-pix2seq, 
+# https://github.com/MarkMoHR/sketch-pix2seq
+# The code was modified for load a model pre-trained and process an image
+# 
+#
+#2019 Steven Andrey Pacheco Portuguez, Coruna, Espana                       *
+#email stpacheco@ic-itcr.ac.cr                                              *
+#****************************************************************************
+
 import numpy as np
 import os
 import json
@@ -110,22 +120,6 @@ def load_env_compatible(data_dir, model_dir):
 
     return load_dataset(data_dir, model_params, inference_mode=True)#
 
-def load_env_compatible_Modified(data_dir, model_dir):
-    """Loads environment for inference mode, used in jupyter notebook."""
-    # modified https://github.com/tensorflow/magenta/blob/master/magenta/models/sketch_rnn/sketch_rnn_train.py
-    # to work with depreciated tf.HParams functionality
-    model_params = sketch_rnn_model.get_default_hparams()
-    with tf.gfile.Open(os.path.join(model_dir, 'model_config.json'), 'r') as f:
-        data = json.load(f)
-    fix_list = ['conditional', 'is_training', 'use_input_dropout', 'use_output_dropout', 'use_recurrent_dropout']
-    for fix in fix_list:
-        data[fix] = (data[fix] == 1)
-    model_params.parse_json(json.dumps(data))
-
-    #return load_dataset(data_dir, model_params, inference_mode=True)#STEVEN
-    return load_parameters(model_params,inference_mode = True)
-    
-
 def load_model_compatible(model_dir):
     """Loads model for inference mode, used in jupyter notebook."""
     # modified https://github.com/tensorflow/magenta/blob/master/magenta/models/sketch_rnn/sketch_rnn_train.py
@@ -160,7 +154,6 @@ def decode(session, sample_model, max_seq_len, z_input=None, temperature=0.1):
     z = None
     if z_input is not None:
         z = [z_input]
-
     sample_strokes, m = sketch_rnn_model.sample(session, sample_model,
                                                 seq_len=max_seq_len, temperature=temperature, z=z)
     strokes = utils.to_normal_strokes(sample_strokes)  # sample_strokes in stroke-5 format, strokes in stroke-3 format
@@ -190,16 +183,44 @@ def sampling_conditional(data_dir, sampling_dir, model_dir):
         draw_strokes(stroke, os.path.join(sub_sampling_dir, 'sample_gt.svg'))
         z = encode(image, sess, eval_model)
         strokes_out = decode(sess, sampling_model, 129, z, temperature=0.1)  # in stroke-3 format
-        #draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
+        draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
 
-         #Create generated grid at various temperatures from 0.1 to 1.0
-        #stroke_list = []
-        #for i in range(10):
-        #   for j in range(3):
-        #        stroke_list.append(
-        #           [decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1), [j, i]])
-        #stroke_grid = make_grid_svg(stroke_list)
-        #draw_strokes(stroke_grid, os.path.join(sub_sampling_dir, 'sample_pred_cond_100.svg'))
+        #Create generated grid at various temperatures from 0.1 to 1.0
+        stroke_list = []
+        for i in range(10):
+           for j in range(3):
+                stroke_list.append(
+                   [decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1), [j, i]])
+        stroke_grid = make_grid_svg(stroke_list)
+        draw_strokes(stroke_grid, os.path.join(sub_sampling_dir, 'sample_pred_cond_100.svg'))
+# *********************************************************************************************
+# *                                                                                           *
+# *                          This functions was add by Steven                                        *
+# *                                                                                           *
+# *                                                                                           *
+# *********************************************************************************************
+def load_env_compatible_Modified(model_dir):
+    """Load the environment for the model. 
+
+    Parameters
+    -------------------
+    model_dir: String
+        Path of the model directory.
+
+    Returns
+    ------------------
+    list
+        Return a list with model parameters loaded.
+    """
+    model_params = sketch_rnn_model.get_default_hparams()
+    with tf.gfile.Open(os.path.join(model_dir, 'model_config.json'), 'r') as f:
+        data = json.load(f)
+    fix_list = ['conditional', 'is_training', 'use_input_dropout', 'use_output_dropout', 'use_recurrent_dropout']
+    for fix in fix_list:
+        data[fix] = (data[fix] == 1)
+    model_params.parse_json(json.dumps(data))
+
+    return load_parameters(model_params,inference_mode = True)
 
 def load_image(png_path):
     img_batch = np.zeros(shape=[1, 48, 48, 1], dtype=np.float32)
@@ -211,9 +232,23 @@ def load_image(png_path):
     
     return img_batch
 
-def sampling_conditional_example(data_dir, sampling_dir, model_dir, image):
+def sampling_conditional_example(model_dir, image):
+    """Execute the Sketch-pix2seq for an image and get corresponding strokes. 
+
+    Parameters
+    -------------------
+    model_dir: String
+        Path of the model directory.
+    image: List
+        Image to be processed.
+
+    Returns
+    ------------------
+    list
+        List strokes that the image is composed.
+    """
     [hps_model, eval_hps_model, sample_hps_model] = \
-        load_env_compatible_Modified(data_dir, model_dir)
+        load_env_compatible_Modified(model_dir)
     reset_graph()
     model = sketch_rnn_model.Model(hps_model)
     eval_model = sketch_rnn_model.Model(eval_hps_model, reuse=True)
@@ -228,13 +263,43 @@ def sampling_conditional_example(data_dir, sampling_dir, model_dir, image):
     strokes_out = decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1)  # in stroke-3 format
     return strokes_out
 
-def getAbsoluteStrokes(data_dir_, sampling_dir_, model_dir_, image):
+def getAbsoluteStrokes(model_dir_, image):
+    """Execute the Sketch-pix2seq for an image and get strokes and obtain the 
+    absolute position for each point. 
 
-    strokes = sampling_conditional_example(data_dir_, sampling_dir_, model_dir_,image)
+    Parameters
+    -------------------
+    model_dir: String
+        Path of the model directory.
+    image: List
+        Image to be processed.
+
+    Returns
+    ------------------
+    list
+        List strokes that the image is composed with their absolute position.
+    """
+    strokes = sampling_conditional_example(model_dir_,image)
     absolute_strokes = transformToAbsolutePosition(strokes)
     return absolute_strokes
 
 def transformToAbsolutePosition(strokes, factor=0.2, padding=50):
+    """Transform the relative strokes to absolute strokes for each point in the stroke list. 
+
+    Parameters
+    -------------------
+    strokes: List
+        List with all strokes of an image.
+    factor: Float, optional
+        A factor for get the bounds of the image.
+    padding: Integer
+        Padding for ubicate the first point of the image.
+
+    Returns
+    ------------------
+    list
+        List with all absolute position for each point.
+    """
     min_x, max_x, min_y, max_y = utils.get_bounds(strokes, factor)
     abs_x = int(padding / 2) - min_x
     abs_y = int(padding / 2) - min_y
@@ -248,23 +313,11 @@ def transformToAbsolutePosition(strokes, factor=0.2, padding=50):
     position = np.asarray(position)
     return position
 
-def drawAbsolutePosition(strokes_abs,limits):
-    x = strokes_abs[:,0]
-    y = strokes_abs[:,1]
-    plt.scatter(x, y)
-    plt.xlim(limits[0], limits[1])
-    plt.ylim(limits[2], limits[3])
-    plt.show()
-    
-
-
 def main(**kwargs):
     data_dir_ = kwargs['data_dir']
     model_dir_ = kwargs['model_dir']
     sampling_dir_ = kwargs['sampling_dir']
     os.makedirs(sampling_dir_, exist_ok=True)
-
-    getAbsoluteStrokes(data_dir_, sampling_dir_, model_dir_,'./200.png')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

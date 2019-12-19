@@ -11,7 +11,7 @@
 import sys
 from os.path import abspath
 sys.path.append(abspath('./code/pix2seq'))
-from sketch_pix2seq_sampling import getAbsoluteStrokes, drawAbsolutePosition
+from sketch_pix2seq_sampling import getAbsoluteStrokes
 from collections import deque
 from datetime import datetime
 from skimage import color
@@ -174,7 +174,6 @@ def mov_poppy_arm(chain, umbral, point):
         fixes += 1
         iteration += 1
     return iteration
-
 
 def init_pos(poppy,  compliant, time_sleep=0.5):
     """Set all Poppy's motor in a initial position and move the right hand.
@@ -499,7 +498,7 @@ def main():
 
         image = getImagePoppy(poppy, params['vrep'])
         strokes = getAbsoluteStrokes(
-            '', '', params["model_pix2seq_path"], image)
+             params["model_pix2seq_path"], image)
         stroke_rescale = rescaledImage(
             strokes, params['image_pixel_size'], params['image_predict_size'], params["rescale_factor"][0], params["rescale_factor"][1])
         drawAbsolutePosition(stroke_rescale, (params['bounds'][0], params['bounds'][0]+params['bounds'][2],
@@ -513,7 +512,7 @@ def main():
         init_pos(poppy, False, 0.1)
         image = getImagePoppy(poppy, params['vrep'])
         strokes = getAbsoluteStrokes(
-            '', '', params["model_pix2seq_path"], image)
+            params["model_pix2seq_path"], image)
         stroke_rescale = rescaledImage(
             strokes, params['image_pixel_size'], params['image_predict_size'], params["rescale_factor"][0], params["rescale_factor"][1])
         drawAbsolutePosition(stroke_rescale, (params['bounds'][0], params['bounds'][0]+params['bounds'][2],
