@@ -23,8 +23,7 @@ pip install opencv-python
 ```
 pip install ikpy
 ```
-5. V-REP
-[V-REP](./V-REP_PRO_EDU_V3_6_2_Ubuntu16_04)
+5. [V-REP](./V-REP_PRO_EDU_V3_6_2_Ubuntu16_04)
 
 6. Pypot
 Para la instalación de pypot debe seguir la siguiente [guía](./Poppy/README.md)
