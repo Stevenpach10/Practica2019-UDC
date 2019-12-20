@@ -25,7 +25,7 @@ cd ./FileToCopy
 sudo cp -r ./  /home/user/anaconda2/lib/python2.7/site-packages
 ```
 
-En la carpeta [pypot/pypot_sensors-sensors_from_config/samples/notebooks](./pypot/pypot_sensors-sensors_from_config/samples/notebooks) podrá encontrar varios ejemplos de uso por ejemplo para comprobar que este funcionando adecuadamente. Para este paso es necesario tener instalado el V-REP. [Using sensors added to V-REP scene.ipynb](./pypot/pypot_sensors-sensors_from_config/samples/notebooks/sensor_usage/Using_sensors_added_to_V-REP_scene.ipynb)
+En la carpeta [pypot/pypot_sensors-sensors_from_config/samples/notebooks](./pypot/pypot_sensors-sensors_from_config/samples/notebooks) podrá encontrar varios ejemplos de uso por ejemplo para comprobar que este funcionando adecuadamente. Para este paso es necesario tener instalado el V-REP. [Using sensors added to V-REP scene.ipynb](./pypot/pypot_sensors-sensors_from_config/samples/notebooks/sensors_usage/Using_sensors_added_to_V-REP_scene.ipynb)
 ### Creditos
 1. El código de la biblioteca de Pypot esta disponible en [Pypot](https://github.com/poppy-project/pypot)
 2. Grupo Integrado de Ingeniería por el aporte a la biblioteca.
