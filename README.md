@@ -6,6 +6,29 @@ Desarrollado dentro del marco del curso de Práctica Profesional-IC8842 del grad
 
 Se muestra un ejemplo de ejecución en el simulador V-REP, donde el robot Poppy captura por medio de su cámara una imagen para ser trazada.
 
+### Requerimientos
+1. numpy
+```
+pip install numpy
+```
+2. matplotlib
+```
+pip install matplotlib
+```
+3. cv2
+```
+pip install opencv-python 
+```
+4. ikpy
+```
+pip install ikpy
+```
+5. V-REP
+[V-REP](./V-REP_PRO_EDU_V3_6_2_Ubuntu16_04)
+
+6. Pypot
+Para la instalación de pypot debe seguir la siguiente [guía](./Poppy/README.md)
+
 ### Entrenamiento y datos.
 Para la preparación de los datos se ha utilizado el repositorio de [Sketch-pix2seq](https://github.com/MarkMoHR/sketch-pix2seq). Aqui puede observar los pasos necesarios para realizar la preparación de los datos y  el correspondiente entrenamiento.
 

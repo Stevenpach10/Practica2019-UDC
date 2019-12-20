@@ -1,0 +1,26 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Desconocido </title></head><body>
+<h1 id="biblioteca-de-pypot-modificada">Biblioteca de pypot modificada.</h1>
+<p>La biblioteca Pypot es la encargada del control de robots basados en motores dynamixel. El Grupo Integrado de Ingeniería de la Universidade Da Coruña ha modificado la biblioteca para optimizar su uso en el simulador V-REP.</p>
+<h3 id="documentacion">Documentación</h3>
+<p>La documentación original de la biblioteca está disponbile en <a href="http://poppy-project.github.io/pypot/">pypot documentación</a>. También en el documento <a href="Manual_uso_Poppy.docx">./Manual_uso_Poppy.docx</a> encontrará una guía del uso del robot Poppy así como diversos ejemplos, instalación y medios de comunicación disponibles.   </p>
+<h3 id="instalacion">Instalación</h3>
+<ol>
+<li>Desinstalar la biblioteca original de Pypot en caso de tenerla instalada.
+<code>pip uninstall pypot</code></li>
+<li>Ir al direcctorio <a href="./pypot/pypot_sensors-sensors_from_config">pypot/pypot_sensors-sensors_from_config</a>
+<code>cd ./pypot/pypot_sensors-sensors_from_config</code></li>
+<li>Ejecutar el archivo <a href="/pypot/pypot_sensors-sensors_from_config/setup.py">setup.py</a>
+<code>python setup.py install</code></li>
+<li>Ahora vamos al directorio <a href="./pypot/FilesToCopy">/pypot/FilesToCopy</a> y copiamos todas las carpetas en la dirección donde se encuentre instalado el site-packages de python y REEMPLAZAMOS. Un ejemplo de la ruta de instalación sería
+<em>/home/user/anaconda2/lib/python2.7/site-packages</em> . Este paso es necesario solo si la biblioteca modificada presenta algun problema.
+<code>cd ..
+cd ./FileToCopy
+cp -r ./  /home/user/anaconda2/lib/python2.7/site-packages</code></li>
+</ol>
+<p>En la carpeta <a href="./pypot/pypot_sensors-sensors_from_config/samples/notebooks">pypot/pypot_sensors-sensors_from_config/samples/notebooks</a> podrá encontrar varios ejemplos de uso por ejemplo para comprobar que este funcionando adecuadamente. Para este paso es necesario tener instalado el V-REP. <a href="./pypot/pypot_sensors-sensors_from_config/samples/notebooks/sensor_usage/Using sensors added to V-REP scene.ipynb">Using sensors added to V-REP scene.ipynb</a></p>
+<h3 id="creditos">Creditos</h3>
+<ol>
+<li>El código de la biblioteca de Pypot esta disponible en <a href="https://github.com/poppy-project/pypot">Pypot</a></li>
+<li>Grupo Integrado de Ingeniería por el aporte a la biblioteca.</li>
+</ol>
+</body></html>
