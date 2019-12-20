@@ -474,7 +474,7 @@ def trainer(model_params):
     with tf.gfile.Open(
             os.path.join(FLAGS.snapshot_root, 'model_config.json'), 'w') as f:
         json.dump(model_params.values(), f, indent=True)
-
+    
     train(sess, model, eval_model, train_set, valid_set, test_set)
 import pylab as plt
 def load_log():
@@ -489,7 +489,7 @@ def load_log():
     eval_reconstr_cost = []
     
     
-    for summary in tf.train.summary_iterator(FLAGS.log_root+"/events.out.tfevents.1572874048.c0903"):
+    for summary in tf.train.summary_iterator(FLAGS.log_root+"/events.out.tfevents.1575970207.c7260"):
         for v in summary.summary.value:
             if(v.tag == "Train_Cost"):
                 train_cost.append(v.simple_value)
@@ -529,8 +529,7 @@ def load_log():
     print(len(eval_cost))
     print(len(eval_reconstr_cost))
 
-    plt.plot(valid_reconstr_cost)
-    plt.plot(time_taken_train)
+    plt.plot(learning_rate)
 
 
     plt.title('Train cost')
@@ -550,4 +549,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    load_log()
