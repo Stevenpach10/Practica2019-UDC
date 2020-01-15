@@ -43,7 +43,7 @@ def getParams():
               'bounds': [-0.05, 0.05, 0.30],                                             # {x_bound_min, y_bound_min, bound_max} These parameters are used  drawing images limits.
               'rescale_factor': [1.10, 0.60],                                           # {x_factor, y_factor} These parameters are used for move the image in axis X and axis Y
                                                                                         # You can move the image result in the axis X and Y
-              'drawing_speed': 0.2,                                                     # Drawing speed
+              'drawing_speed': 1,                                                     # Drawing speed
               'acceptance_draw': [0.001, 0.001, 0.001],                                   # Error percentage allow while poppy is drawing. {X_error,Y_error,Z_error}
               'acceptance_without_draw': [0.1, 0.01, 0.1],                              # Error percentage allow while poppy is not drawing. {X_error,Y_error,Z_error}
               'Plane_Y': [-0.20, -0.17]                                                 # Plane Y where Poppy has to draw and when does not. {Y_draw, Y_Not_Draw}
@@ -127,16 +127,16 @@ def mov_head_get_image(poppy, vrep):
     numpy list
         Image with default size  
     """
-    poppy.head_y.goto_position(-20, 0.05)
-    poppy.head_z.goto_position(-89, 0.05)
+    poppy.head_y.goto_position(-20, 1)
+    poppy.head_z.goto_position(-89, 1)
     time.sleep(2)
     if vrep:
         image = poppy.Vision_sensor.frame
     else:
         image = poppy.head_camera.frame
     time.sleep(2)
-    poppy.head_y.goto_position(0, 0.05)
-    poppy.head_z.goto_position(0, 0.05)
+    poppy.head_y.goto_position(0, 1)
+    poppy.head_z.goto_position(0, 1)
     return image
 
 def mov_poppy_arm(chain, umbral, point):
@@ -198,7 +198,7 @@ def init_pos(poppy,  compliant, time_sleep=0.5):
             motor.compliant = compliant
             motor.goto_position(0, 0.8)
             time.sleep(time_sleep)
-        poppy.r_elbow_y.goto_position(90, 1)
+        poppy.r_elbow_y.goto_position(0, 1)
         poppy.r_arm_z.goto_position(-45, 1)
         time.sleep(time_sleep)
 
@@ -494,6 +494,7 @@ def main():
         poppy = PoppyTorso(
             simulator='vrep', scene=params['scene_path'], config=params['config_path'])
         clientID = vrep.simxStart('127.0.0.1', 19999, True, True, 5000, 5)
+        
         add_texture_TV(params['path_image_target'], clientID)
 
         image = getImagePoppy(poppy, params['vrep'])
@@ -509,7 +510,8 @@ def main():
         vrep.simxFinish(clientID)
     else:
         poppy = PoppyTorso(config=params['config_path'])
-        init_pos(poppy, False, 0.1)
+        init_pos(poppy, True, 0.1)
+
         image = getImagePoppy(poppy, params['vrep'])
         strokes = getAbsoluteStrokes(
             params["model_pix2seq_path"], image)

@@ -6,8 +6,8 @@ import tensorflow as tf
 from six.moves import range
 import svgwrite
 from PIL import Image
+import cv2
 import matplotlib.pyplot as plt
-
 import model as sketch_rnn_model
 import utils
 from sketch_pix2seq_train import load_dataset, reset_graph, load_checkpoint,load_parameters
@@ -48,9 +48,6 @@ def draw_strokes(data, svg_filename, factor=0.2, padding=50):
         p += command + str(x) + ", " + str(y) + " "
     the_color = "black"
     stroke_width = 1
-    print("")
-    print("COMANDOS")
-    print(p)
     dwg.add(dwg.path(p).stroke(the_color, stroke_width).fill("none"))
     dwg.save()
 
@@ -112,7 +109,7 @@ def load_env_compatible(data_dir, model_dir):
         data[fix] = (data[fix] == 1)
     model_params.parse_json(json.dumps(data))
 
-    return load_dataset(data_dir, model_params, inference_mode=True)#
+    return load_dataset(data_dir, model_params, inference_mode=True)
 
 def load_env_compatible_Modified(data_dir, model_dir):
     """Loads environment for inference mode, used in jupyter notebook."""
@@ -186,24 +183,28 @@ def sampling_conditional(data_dir, sampling_dir, model_dir):
     # loads the weights from checkpoint into our model
     load_checkpoint(sess, model_dir)
 
-    for _ in range(1):
+    for _ in range(10):
         # get a sample drawing from the test set, and render it to .svg
         stroke, rand_idx, image = test_set.random_sample()  # ndarray, [N_points, 3]
         sub_sampling_dir = os.path.join(sampling_dir, str(rand_idx))
         os.makedirs(sub_sampling_dir, exist_ok=True)
         draw_strokes(stroke, os.path.join(sub_sampling_dir, 'sample_gt.svg'))
+        image = image.reshape(48,48)
+        cv2.imwrite(os.path.join(sub_sampling_dir, 'sample_gt.png'), image)
+        image = image.reshape(1,48,48,1)
+
         z = encode(image, sess, eval_model)
         strokes_out = decode(sess, sampling_model, 129, z, temperature=0.1)  # in stroke-3 format
-        #draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
+        draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
 
-         #Create generated grid at various temperatures from 0.1 to 1.0
-        #stroke_list = []
-        #for i in range(10):
-        #   for j in range(3):
-        #        stroke_list.append(
-        #           [decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1), [j, i]])
-        #stroke_grid = make_grid_svg(stroke_list)
-        #draw_strokes(stroke_grid, os.path.join(sub_sampling_dir, 'sample_pred_cond_100.svg'))
+        #Create generated grid at various temperatures from 0.1 to 1.0
+        stroke_list = []
+        for i in range(10):
+           for j in range(3):
+                stroke_list.append(
+                   [decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1), [j, i]])
+        stroke_grid = make_grid_svg(stroke_list)
+        draw_strokes(stroke_grid, os.path.join(sub_sampling_dir, 'sample_pred_cond_100.svg'))
 
 def load_image(png_path):
     img_batch = np.zeros(shape=[1, 48, 48, 1], dtype=np.float32)
@@ -232,6 +233,7 @@ def sampling_conditional_example(data_dir, sampling_dir, model_dir, image_path):
     strokes_out = decode(sess, sampling_model, eval_model.hps.max_seq_len, z, temperature=0.1)  # in stroke-3 format
     draw_strokes(strokes_out, './gato.svg')
     return strokes_out
+
 def getAbsoluteStrokes(data_dir_, sampling_dir_, model_dir_, image_path):
     strokes = sampling_conditional_example(data_dir_, sampling_dir_, model_dir_,image_path)
     absolute_strokes = transformToAbsolutePosition(strokes)
@@ -267,7 +269,8 @@ def main(**kwargs):
     sampling_dir_ = kwargs['sampling_dir']
     os.makedirs(sampling_dir_, exist_ok=True)
 
-    getAbsoluteStrokes(data_dir_, sampling_dir_, model_dir_,'./200.png')
+    #getAbsoluteStrokes(data_dir_, sampling_dir_, model_dir_,'./200.png')
+    sampling_conditional(data_dir_, sampling_dir_,model_dir_)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

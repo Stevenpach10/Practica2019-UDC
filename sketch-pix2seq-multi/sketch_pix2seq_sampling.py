@@ -7,7 +7,7 @@ from six.moves import range
 import svgwrite
 from PIL import Image
 import matplotlib.pyplot as plt
-
+import cv2
 import model as sketch_rnn_model
 import utils
 from sketch_pix2seq_train import load_dataset, reset_graph, load_checkpoint,load_parameters
@@ -183,12 +183,15 @@ def sampling_conditional(data_dir, sampling_dir, model_dir):
     # loads the weights from checkpoint into our model
     load_checkpoint(sess, model_dir)
 
-    for _ in range(2):
+    for _ in range(10):
         # get a sample drawing from the test set, and render it to .svg
         stroke, rand_idx, image = test_set.random_sample()  # ndarray, [N_points, 3]
         sub_sampling_dir = os.path.join(sampling_dir, str(rand_idx))
         os.makedirs(sub_sampling_dir, exist_ok=True)
         draw_strokes(stroke, os.path.join(sub_sampling_dir, 'sample_gt.svg'))
+        image = image.reshape(48,48)
+        cv2.imwrite(os.path.join(sub_sampling_dir, 'sample_gt.png'), image)
+        image = image.reshape(1,48,48,1)
         z = encode(image, sess, eval_model)
         strokes_out = decode(sess, sampling_model, 129, z, temperature=0.1)  # in stroke-3 format
         draw_strokes(strokes_out, os.path.join(sub_sampling_dir, 'sample_pred_cond.svg'))
