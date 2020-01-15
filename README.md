@@ -31,6 +31,12 @@ Para la instalación de pypot debe seguir la siguiente [guía](./Poppy/README.md
 ### Entrenamiento y datos.
 Para la preparación de los datos se ha utilizado el repositorio de [Sketch-pix2seq](https://github.com/MarkMoHR/sketch-pix2seq). Aqui puede observar los pasos necesarios para realizar la preparación de los datos y  el correspondiente entrenamiento.
 
+### Modelo pre entrenado
+Puede encontrar un modelo pre entrenado en el Centro Tecnolóxico de Supercomputación de Galicia en el directorio [Pretrained Model](./InverseKinematic/code/Pretrained_model). Ahí encontrará dos carpetas correspondientes a un modelo para una sola clase de objetos, en este caso la clase gato, y otro modelo con tres clases, en este caso león, bicicletas y oso.
+
+Para usar estos modelos solamente debe de copiar la carpeta outputs del modelo que desea utilizar dentro del directorio [pix2seq](./InverseKinematic/code/pix2seq)
+
+
 ### Configuración
 Para configurar los hiperparametros dirigase al directorio [InverseKinematic.py](./InverseKinematic/code/InverseKinematic.py) en *getParams()*
 
