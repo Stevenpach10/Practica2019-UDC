@@ -1,6 +1,0 @@
-cd $HOME/BehChaining/EE
-./GA_Camera -r 1 -h 5 -m 10 &
-
-cd $HOME/BehChaining/Target
-./MorphEngine -r 1 -null
-

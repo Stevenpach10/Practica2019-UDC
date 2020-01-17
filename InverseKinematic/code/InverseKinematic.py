@@ -32,21 +32,25 @@ fixes = 0
 
 
 def getParams():
-    params = {'vrep': True,                                                            # Indicates if we are using a simlator or not. True for use V-REP.
+    params = {'vrep': True,                                                             #Indicates if we are using a simlator or not. True for use V-REP.
+              'plot_points' : True,                                                     #True if you want plot all point that Poppy have to draw.
+              'plot_all_moves' : False,                                                 #True if you want plot all Poppy's moves with corrections
+              'capture_from_camera' : True,                                             #True if you want capture a frame from camera while Poppy is moving his head.
               'scene_path':  abspath('./vrep-sensors/torso_sensors_scene.ttt'),         # Path for V-REP's scene
               'config_path': abspath('./vrep-sensors/torso_vrep_sensors_config.json'),  # Path for Poppy's configuration in V-REP
               'config_path_sensor': abspath('./config/torso_config_cam01.json'),        # Path for Poppy's configuration sensor for real simulation
               'model_pix2seq_path': abspath('./code/pix2seq/outputs/snapshot'),         # Path Sketch model
-              'path_image_target': abspath('./images/200.png'),                         # Path image source
-              'image_predict_size': 0.10,                                               # Size of the image to draw by Poppy in centimeters
+              'path_image_target': abspath('./images/lion_1.png'),                      # Path image source
+              'image_predict_size': 0.12,                                               # Size of the image to draw by Poppy in centimeters
               'image_pixel_size': 48,                                                   # Pixel size from image source (Sketch image input size)
-              'bounds': [-0.05, 0.05, 0.30],                                             # {x_bound_min, y_bound_min, bound_max} These parameters are used  drawing images limits.
-              'rescale_factor': [1.10, 0.60],                                           # {x_factor, y_factor} These parameters are used for move the image in axis X and axis Y
+              'bounds': [-0.05, 0.05, 0.40],                                            # {x_bound_min, y_bound_min, bound_max} These parameters are used  drawing images limits.
+              'rescale_factor': [1.10, 0.40],                                           # {x_factor, y_factor} These parameters are used for move the image in axis X and axis Y
                                                                                         # You can move the image result in the axis X and Y
-              'drawing_speed': 1,                                                     # Drawing speed
-              'acceptance_draw': [0.001, 0.001, 0.001],                                   # Error percentage allow while poppy is drawing. {X_error,Y_error,Z_error}
+              'drawing_speed': 0.2,                                                     # Drawing speed
+              'acceptance_draw': [0.001, 0.001, 0.001],                                 # Error percentage allow while poppy is drawing. {X_error,Y_error,Z_error}
               'acceptance_without_draw': [0.1, 0.01, 0.1],                              # Error percentage allow while poppy is not drawing. {X_error,Y_error,Z_error}
-              'Plane_Y': [-0.20, -0.17]                                                 # Plane Y where Poppy has to draw and when does not. {Y_draw, Y_Not_Draw}
+              'Plane_Y': [-0.20, -0.17],                                                # Plane Y where Poppy has to draw and when does not. {Y_draw, Y_Not_Draw}
+              'clientID': -1                                                            #ClientID for simulation
               }
     return params
 # *********************************************************************************************
@@ -128,7 +132,7 @@ def mov_head_get_image(poppy, vrep):
         Image with default size  
     """
     poppy.head_y.goto_position(-20, 1)
-    poppy.head_z.goto_position(-89, 1)
+    poppy.head_z.goto_position(-90, 1)
     time.sleep(2)
     if vrep:
         image = poppy.Vision_sensor.frame
@@ -139,7 +143,7 @@ def mov_head_get_image(poppy, vrep):
     poppy.head_z.goto_position(0, 1)
     return image
 
-def mov_poppy_arm(chain, umbral, point):
+def mov_poppy_arm(chain, umbral, point, draw_all_moves = False):
     """Move a chain of Poppy to target point. While the difference between effector and end point
     is greater than the umbral. Move again the chain to reach the position.
 
@@ -151,6 +155,8 @@ def mov_poppy_arm(chain, umbral, point):
         The minimun error value allow for each axis (x, y, z)
     point: List
         Target point, three elements 
+    draw_all_moves: Boolean
+        Draw all move until to reach the right point, True for draw
 
     Returns
     ------------------
@@ -159,9 +165,23 @@ def mov_poppy_arm(chain, umbral, point):
     """
     global fixes
     limit = 20
+    line = deque()
     iteration = 1
+    auxhandle = vrep.simxGetObjectHandle(
+        params['clientID'], 'l_ball', vrep.simx_opmode_blocking)
+    init = vrep.simxGetObjectPosition(
+            params['clientID'], auxhandle[1], -1, vrep.simx_opmode_buffer)
+    line.append([init[1][0], init[1][1], init[1][2]])
     chain.goto((point[0], point[1], point[2]),
                params['drawing_speed'], wait=True)
+    time.sleep(0.1)
+    position = vrep.simxGetObjectPosition(
+            params['clientID'], auxhandle[1], -1, vrep.simx_opmode_buffer)
+
+    line.append([position[1][0], position[1][1], position[1][2]])
+    if (len(line) == 2 and draw_all_moves and point[3] == 0):
+                draw_line(line, params['clientID'])
+                line.append([position[1][0], position[1][1], position[1][2]])
 
     effector = chain.end_effector
     diff = calc_difference(point, effector)
@@ -169,7 +189,17 @@ def mov_poppy_arm(chain, umbral, point):
         chain.goto((point[0], point[1], point[2]),
                    params['drawing_speed'], wait=True)
         time.sleep(0.1)
+        position2 = vrep.simxGetObjectPosition(
+            params['clientID'], auxhandle[1], -1, vrep.simx_opmode_buffer)
+        line.append([position2[1][0], position2[1][1], position2[1][2]])
+        if (len(line) == 2 and draw_all_moves and point[3] == 0):
+                draw_line(line, params['clientID'])
+                position = position2
+                line.append([position[1][0], position[1][1], position[1][2]])
         effector = chain.end_effector
+        
+ 
+
         diff = calc_difference(point, effector)
         fixes += 1
         iteration += 1
@@ -285,7 +315,7 @@ def drawWithPoppyPointVREP(clientID, planeY, withoutDraw, strokes, poppy, umbral
             axisY = withoutDraw
             umbralR = umbral_without
         i = mov_poppy_arm(poppy.l_arm_chain, umbralR,
-                          (stroke[0], axisY, stroke[1]))
+                          (stroke[0], axisY, stroke[1]), params['plot_all_moves'])
         stroke_i += 1
         position = vrep.simxGetObjectPosition(
             clientID, auxhandle[1], -1, vrep.simx_opmode_buffer)
@@ -302,11 +332,11 @@ def drawWithPoppyPointVREP(clientID, planeY, withoutDraw, strokes, poppy, umbral
     print("-----------------------------------------------")
     print(diff_time(start, end))
     mov_poppy_arm(poppy.l_arm_chain, umbral,
-                  (stroke[0], withoutDraw, stroke[1]))
+                  (stroke[0], withoutDraw, stroke[1]), params['plot_all_moves'])
     return position_total, position_draw_log, position_without_draw_log
 
 
-def draw_line(queue, clientID):
+def draw_line(queue, clientID, red = False):
     """ Draw a line in the simulator V-REP using two points. 
 
     Parameters
@@ -327,7 +357,10 @@ def draw_line(queue, clientID):
     initial_point = queue.popleft()
     final_point = queue.popleft()
     line = np.asarray([initial_point, final_point]).flatten()
-    draw_VREP_Line(line, clientID)
+    if red:
+        draw_VREP_Line_Red(line, clientID)
+    else:
+        draw_VREP_Line(line, clientID)
     return queue
 
 
@@ -370,6 +403,7 @@ def drawWithPoppyLineVREP(clientID, planeY, withoutDraw, strokes, poppy, umbral,
     position = vrep.simxGetObjectPosition(
         clientID, auxhandle[1], -1, vrep.simx_opmode_streaming)
     start = datetime.now()
+    last_stroke = [-1,-1,-1,-1]
     for stroke in strokes:
         if stroke[2] == 0:
             axisY = planeY
@@ -377,9 +411,13 @@ def drawWithPoppyLineVREP(clientID, planeY, withoutDraw, strokes, poppy, umbral,
         else:
             axisY = withoutDraw
             umbralR = umbral_without
-
-        i = mov_poppy_arm(poppy.l_arm_chain, umbralR,
-                          (stroke[0], axisY, stroke[1]))
+        
+        if last_stroke[2] == 0:
+            i = mov_poppy_arm(poppy.l_arm_chain, umbralR,
+                            (stroke[0], axisY, stroke[1], stroke[2]),params['plot_all_moves'])
+        else:
+            i = mov_poppy_arm(poppy.l_arm_chain, umbralR,
+                            (stroke[0], axisY, stroke[1], stroke[2]))
         stroke_i += 1
         position = vrep.simxGetObjectPosition(
             clientID, auxhandle[1], -1, vrep.simx_opmode_buffer)
@@ -387,7 +425,7 @@ def drawWithPoppyLineVREP(clientID, planeY, withoutDraw, strokes, poppy, umbral,
             position_draw_log.append(position[1])
             line.append([position[1][0], position[1][1], position[1][2]])
             if (len(line) == 2):
-                draw_line(line, clientID)
+                draw_line(line, clientID, True)
                 line.append([position[1][0], position[1][1], position[1][2]])
         else:
             if(len(line) == 1):
@@ -396,10 +434,11 @@ def drawWithPoppyLineVREP(clientID, planeY, withoutDraw, strokes, poppy, umbral,
         position_total.append(position[1])
         print("Move %.d" % stroke_i + " from %.d" %
               size + " iterations to converge : %.d" % i)
+        last_stroke = stroke
     end = datetime.now()
     print("-----------------------------------------------")
     print(diff_time(start, end))
-    mov_poppy_arm(poppy.l_arm_chain, umbral, (0.01, -0.15, 0.10))
+    mov_poppy_arm(poppy.l_arm_chain, umbral, (0.01, -0.15, 0.10,1), params['plot_all_moves'])
     return position_total, position_draw_log, position_without_draw_log
 
 
@@ -445,7 +484,7 @@ def drawWithPoppyLine(planeY, withoutDraw, strokes, poppy, umbral, umbral_withou
             umbralR = umbral_without
 
         i = mov_poppy_arm(poppy.l_arm_chain, umbralR,
-                          (stroke[0], axisY, stroke[1]))
+                          (stroke[0], axisY, stroke[1]), params['plot_all_moves'])
 
         position = getEffector(poppy)
         stroke_i += 1
@@ -480,6 +519,8 @@ def getImagePoppy(poppy, vrep):
     image = mov_head_get_image(poppy, vrep)
     image = cv2.resize(image, (48, 48), interpolation=cv2.INTER_AREA)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if params['capture_from_camera']:
+        cv2.imwrite("./cam_caption.jpg",image)
     image = np.reshape(image, (1, 48, 48, 1))
     return image
 
@@ -494,7 +535,7 @@ def main():
         poppy = PoppyTorso(
             simulator='vrep', scene=params['scene_path'], config=params['config_path'])
         clientID = vrep.simxStart('127.0.0.1', 19999, True, True, 5000, 5)
-        
+        params['clientID'] = clientID
         add_texture_TV(params['path_image_target'], clientID)
 
         image = getImagePoppy(poppy, params['vrep'])
@@ -502,7 +543,9 @@ def main():
              params["model_pix2seq_path"], image)
         stroke_rescale = rescaledImage(
             strokes, params['image_pixel_size'], params['image_predict_size'], params["rescale_factor"][0], params["rescale_factor"][1])
-        drawAbsolutePosition(stroke_rescale, (params['bounds'][0], params['bounds'][0]+params['bounds'][2],
+
+        if params['plot_points']:
+            drawAbsolutePosition(stroke_rescale, (params['bounds'][0], params['bounds'][0]+params['bounds'][2],
                                               params['bounds'][1], params['bounds'][1]+params['bounds'][2]))
 
         position_total, position_draw_log, position_without_draw_log = drawWithPoppyLineVREP(clientID, params['Plane_Y'][0], params['Plane_Y'][1],
@@ -517,7 +560,9 @@ def main():
             params["model_pix2seq_path"], image)
         stroke_rescale = rescaledImage(
             strokes, params['image_pixel_size'], params['image_predict_size'], params["rescale_factor"][0], params["rescale_factor"][1])
-        drawAbsolutePosition(stroke_rescale, (params['bounds'][0], params['bounds'][0]+params['bounds'][2],
+        
+        if params['plot_points']:
+            drawAbsolutePosition(stroke_rescale, (params['bounds'][0], params['bounds'][0]+params['bounds'][2],
                                               params['bounds'][1], params['bounds'][1]+params['bounds'][2]))
 
         position_total, position_draw_log, position_without_draw_log = drawWithPoppyLine(params['Plane_Y'][0], params['Plane_Y'][1],
@@ -529,7 +574,8 @@ def main():
     position_without_draw_log = np.asarray(position_without_draw_log)
     position_total = np.asarray(position_total)
 
-    plotAllData(position_total)
+    if params['plot_points']:
+        plotAllData(position_total)
 
 
 if __name__ == '__main__' and __package__ is None:

@@ -28,8 +28,29 @@ def draw_VREP_Point(points, clientID):
                                                 vrep.sim_scripttype_childscript, 'draw_point', 
                                                 [], points, [], bytearray(), vrep.simx_opmode_blocking)
     return res
+
+def draw_VREP_Line_Red(points, clientID):
+    """Allow draw a line red in V-REP through vrep API calling a script function in a scene 
+
+    Parameters
+    -------------------
+    point: List
+        List with two points, each point with the shape (1,3)
+    clientID: Integer
+        Identifier of the connection with V-REP scene simulation.
+
+    Returns
+    ------------------
+    list
+        list with response of script in VREP 
+    """
+    res = vrep.simxCallScriptFunction(clientID, 'Canvas', 
+                                            vrep.sim_scripttype_childscript, 'draw_line2', 
+                                            [], points, [], bytearray(), vrep.simx_opmode_blocking)
+    return res
+
 def draw_VREP_Line(points, clientID):
-    """Allow draw a line in V-REP through vrep API calling a script function in a scene 
+    """Allow draw a line yellow in V-REP through vrep API calling a script function in a scene 
 
     Parameters
     -------------------
