@@ -47,7 +47,14 @@ Para ejecutar el proyecto debe:
 ```
 python InverseKinematic.py
  ```
+## Demo
+En el directorio [Results](./Results) puede encontrar los experimentos realizados organizados por clase, estos experimentos consisten en un video respectivo del simulador del humanoide Poppy. En la parte de imagenes puede encontrar cuatro figuras tres correspondientes al movimiento de los ejes del efector del robot, y otra imagen de los puntos de salida de pix2seq.
 
+Para cada clase hay un ejemplo con un vídeo de todos los movimientos, es decir con cada una de las correcciones realizadas al momento de alcanzar un punto realizados por Poppy y otro vídeo solamente con los puntos que son tomados como aceptables.
+
+En la siguiente imagen, se pueden observar los puntos que debe de alcanzar el humanoide para ejecutar un dibujo de la clase león. 
+
+![Salida correspondiente del modelo pix2seq](./Results/Lion_class/Experiment_1/images/figure_lion_1_1.png)
 ## Creditos
 - El código correspondiente a Sketch-pix2seq fue tomado del repositorio [Sketch-pix2seq](https://github.com/MarkMoHR/sketch-pix2seq).
 - La Fundación Pública Galega Centro Tecnolóxico de Supercomputación de Galicia (CESGA) por los recursos computacionales brindados para el entrenamiento. 
