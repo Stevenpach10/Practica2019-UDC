@@ -55,8 +55,14 @@ Para cada clase hay un ejemplo con un vídeo de todos los movimientos, es decir 
 En la siguiente imagen, se pueden observar los puntos que debe de alcanzar el humanoide para ejecutar un dibujo de la clase león. 
 
 ![Salida correspondiente del modelo pix2seq](./Results/Lion_class/Experiment_1/images/figure_lion_1_1.png)
+
+El resultado del experimento puede observarlo en el video:
 [![Video](./Results/Lion_class/Experiment_1/video/caption.png)](./Results/Lion_class/Experiment_1/video/video_lion_1.mp4)
 
+Es importante resaltar el uso de la cinematica inversa disponible en la librería pypot haciendo uso de ikpy, para alcanzar los puntos en el plano.A continuación puede observar el seguimiento de los ejes durante todo el proceso.
+![x](./Results/Lion_class/Experiment_1/images/figure_lion_1_2.png)
+![y](./Results/Lion_class/Experiment_1/images/figure_lion_1_3.png)
+![z](./Results/Lion_class/Experiment_1/images/figure_lion_1_4.png)
 ## Creditos
 - El código correspondiente a Sketch-pix2seq fue tomado del repositorio [Sketch-pix2seq](https://github.com/MarkMoHR/sketch-pix2seq).
 - La Fundación Pública Galega Centro Tecnolóxico de Supercomputación de Galicia (CESGA) por los recursos computacionales brindados para el entrenamiento. 
