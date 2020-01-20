@@ -34,17 +34,17 @@ fixes = 0
 def getParams():
     params = {'vrep': True,                                                             #Indicates if we are using a simlator or not. True for use V-REP.
               'plot_points' : True,                                                     #True if you want plot all point that Poppy have to draw.
-              'plot_all_moves' : False,                                                 #True if you want plot all Poppy's moves with corrections
+              'plot_all_moves' : True,                                                 #True if you want plot all Poppy's moves with corrections
               'capture_from_camera' : True,                                             #True if you want capture a frame from camera while Poppy is moving his head.
               'scene_path':  abspath('./vrep-sensors/torso_sensors_scene.ttt'),         # Path for V-REP's scene
               'config_path': abspath('./vrep-sensors/torso_vrep_sensors_config.json'),  # Path for Poppy's configuration in V-REP
               'config_path_sensor': abspath('./config/torso_config_cam01.json'),        # Path for Poppy's configuration sensor for real simulation
               'model_pix2seq_path': abspath('./code/pix2seq/outputs/snapshot'),         # Path Sketch model
-              'path_image_target': abspath('./images/lion_1.png'),                      # Path image source
+              'path_image_target': abspath('./images/Cat_2.png'),                      # Path image source
               'image_predict_size': 0.12,                                               # Size of the image to draw by Poppy in centimeters
               'image_pixel_size': 48,                                                   # Pixel size from image source (Sketch image input size)
-              'bounds': [-0.05, 0.05, 0.40],                                            # {x_bound_min, y_bound_min, bound_max} These parameters are used  drawing images limits.
-              'rescale_factor': [1.10, 0.40],                                           # {x_factor, y_factor} These parameters are used for move the image in axis X and axis Y
+              'bounds': [-0.15, 0.10, 0.28],                                            # {x_bound_min, y_bound_min, bound_max} These parameters are used plot images limits.
+              'rescale_factor': [1.15, 0.50],                                           # {x_factor, y_factor} These parameters are used for move the image in axis X and axis Y
                                                                                         # You can move the image result in the axis X and Y
               'drawing_speed': 0.2,                                                     # Drawing speed
               'acceptance_draw': [0.001, 0.001, 0.001],                                 # Error percentage allow while poppy is drawing. {X_error,Y_error,Z_error}

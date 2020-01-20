@@ -311,6 +311,7 @@ def transformToAbsolutePosition(strokes, factor=0.2, padding=50):
         position.append([abs_x,abs_y,stroke[2]])
 
     position = np.asarray(position)
+    
     return position
 
 def main(**kwargs):
