@@ -57,7 +57,7 @@ En la siguiente imagen, se pueden observar los puntos que debe de alcanzar el hu
 ![Salida correspondiente del modelo pix2seq](./Results/Lion_class/Experiment_1/images/figure_lion_1_1.png)
 
 El resultado del experimento puede observarlo en el video:
-[![Video](./Results/Lion_class/Experiment_1/video/caption.png)](./Results/Lion_class/Experiment_1/video/video_lion_1.mp4)
+[![Video](./Results/Lion_class/Experiment_1/video/caption.png)](https://youtu.be/_Hf7IB0OtLY)
 
 Es importante resaltar el uso de la cinematica inversa disponible en la librería pypot haciendo uso de ikpy, para alcanzar los puntos en el plano. A continuación puede observar el seguimiento de los ejes durante todo el proceso de trazado.
 ![x](./Results/Lion_class/Experiment_1/images/figure_lion_1_2.png)

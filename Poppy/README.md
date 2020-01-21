@@ -1,31 +1,33 @@
-# Biblioteca de pypot modificada.
-La biblioteca Pypot es la encargada del control de robots basados en motores dynamixel. El Grupo Integrado de Ingeniería de la Universidade Da Coruña ha modificado la biblioteca para optimizar su uso en el simulador V-REP.
+# Pypot library modified
+The pypot library is responsible for
+the control of robots used in dynamixel engines. The Integrated Engineering Group of the University of the Coruña has modified that library for their optimization using V-REP simulator.
 
-### Documentación 
-La documentación original de la biblioteca está disponbile en [pypot documentación](http://poppy-project.github.io/pypot/). También en el documento [./Manual_uso_Poppy.docx](Manual_uso_Poppy.docx) encontrará una guía del uso del robot Poppy así como diversos ejemplos, instalación y medios de comunicación disponibles.   
+### Documentation
+The original documentation for the library is available at [documentation pypot](http://poppy-project.github.io/pypot/). There also in the file [./Manual_uso_Poppy.docx](Manual_uso_Poppy.docx) you can find a user guide of Poppy robot as well as use examples, instalation and  avaible media.
 
-### Instalación
-1. Desinstalar la biblioteca original de Pypot en caso de tenerla instalada.
+### Instalation
+1. Uninstall the original pypot library if you have installed it before.
 ```
 	pip uninstall pypot
 ```
-2. Ir al direcctorio [pypot/pypot_sensors-sensors_from_config](./pypot/pypot_sensors-sensors_from_config)
+2. Go to the directory [pypot/pypot_sensors-sensors_from_config](./pypot/pypot_sensors-sensors_from_config)
 ```
 	cd ./pypot/pypot_sensors-sensors_from_config
 ```
-3. Ejecutar el archivo [setup.py](./pypot/pypot_sensors-sensors_from_config/setup.py)
+3. Execute the file [setup.py](./pypot/pypot_sensors-sensors_from_config/setup.py) for the installation
 ```
 	python setup.py install
 ```
-4. Ahora vamos al directorio [/pypot/FilesToCopy](./pypot/FilesToCopy) y copiamos todas las carpetas en la dirección donde se encuentre instalado el site-packages de python y REEMPLAZAMOS. Un ejemplo de la ruta de instalación sería
-*/home/user/anaconda2/lib/python2.7/site-packages* . Este paso es necesario solo si la biblioteca modificada presenta algun problema.
+4. Now go to the directory [/pypot/FilesToCopy](./pypot/FilesToCopy) and we going to copy and replace all folders where the python site-packages are installed. An example of root is:
+*/home/user/anaconda2/lib/python2.7/site-packages*.
+This step is necessary only if the modified library present any error.
 ```
 cd ..
 cd ./FileToCopy
 sudo cp -r ./  /home/user/anaconda2/lib/python2.7/site-packages
 ```
 
-En la carpeta [pypot/pypot_sensors-sensors_from_config/samples/notebooks](./pypot/pypot_sensors-sensors_from_config/samples/notebooks) podrá encontrar varios ejemplos de uso por ejemplo para comprobar que este funcionando adecuadamente. Para este paso es necesario tener instalado el V-REP. [Using sensors added to V-REP scene.ipynb](./pypot/pypot_sensors-sensors_from_config/samples/notebooks/sensors_usage/Using_sensors_added_to_V-REP_scene.ipynb)
-### Creditos
-1. El código de la biblioteca de Pypot esta disponible en [Pypot](https://github.com/poppy-project/pypot)
-2. Grupo Integrado de Ingeniería por el aporte a la biblioteca.
+In the folder [pypot/pypot_sensors-sensors_from_config/samples/notebooks](./pypot/pypot_sensors-sensors_from_config/samples/notebooks) you will find some useful examples for check if it is working correctly. For this step is necessary have installed V-REP simulator [Using sensors added to V-REP scene.ipynb](./pypot/pypot_sensors-sensors_from_config/samples/notebooks/sensors_usage/Using_sensors_added_to_V-REP_scene.ipynb)
+## Credits
+1. The library Pypot code is available at [Pypot](https://github.com/poppy-project/pypot)
+2. The Integrated Engineering Group of the University of the Coruña for this great contribution.
