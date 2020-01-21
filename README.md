@@ -38,7 +38,7 @@ You can use these models only copying the outputs folder of the model that you w
 ### Configuration
 To configure the hyperparameters you only have to modify the file [InverseKinematic.py](./InverseKinematic/code/InverseKinematic.py) in the function *getParams()*
 
-##Execution
+## Execution
 For run you have to:
 1. Open V-REP simulator
 2. Go to the folder [InverseKinematic.py](./InverseKinematic/code) and type the command
