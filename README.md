@@ -62,8 +62,8 @@ It is important highlight the use of the inverse kinematic of pypot library doin
 ![y](./Results/Lion_class/Experiment_1/images/figure_lion_1_3.png)
 ![z](./Results/Lion_class/Experiment_1/images/figure_lion_1_4.png)
 ## Contact
-[Steven Pacheco-Portuguez](stpacheco@ic-itcr.ac.cr)
-[Martin Naya-Varela](martin.naya@udc.es)
+- Steven Pacheco-Portuguez , stpacheco@ic-itcr.ac.cr
+- Martin Naya-Varela, martin.naya@udc.es
 
 ## Credits
 - The Sketch-pix2seq code was taken of the repository [Sketch-pix2seq](https://github.com/MarkMoHR/sketch-pix2seq)
