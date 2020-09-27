@@ -1,4 +1,4 @@
-# Graduation project to opt for bachelor's degree in Computer Engineering. Technological Institute of Costa Rica. 
+# Graduation project to opt for bachelor's degree in Computer Engineering. Instituto Tecnologico de Costa Rica. 
 ## Steven Andrey Pacheco Portuguez, Universidade Da Coruña Sept-2019 to Dic-2019.
 In the present work, we implement a neural network architecture with the ability to transform an image to several strokes in a sequential way it allows us to simulate in a better form the drawing way of the human being, for this we used the QuickDraw! data set, through the use of Sketch-pix2seq architecture. It allows getting a set of strokes to follow given an input image. Consequently, we apply inverse kinematic to reach drawing replication.
 
